@@ -1,11 +1,12 @@
-import React, { useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useRef, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { SlClose } from "react-icons/sl";
 
-const CreateNew = () => {
+const Edit = () => {
     const fileRef = useRef()
     const navigate = useNavigate()
+    const {id} = useParams()
     const[svg, setSvg] = useState()
     const[svgPreview, setSvgPreview] = useState()
     const [formData, setFormData] = useState({
@@ -27,6 +28,27 @@ const CreateNew = () => {
         {title: "Upload your image", inputType: "file", id:"image"},
     ]
 
+    const getIndividualData = async() => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/employee/single/${id}`, {
+                method: "GET",
+                // headers: {
+                //     "Content-Type": "application/json"
+                // },
+                credentials: "include"
+            })
+            const result = await response.json()
+            
+            setFormData(result.data)
+        } catch (error) {
+            toast.error(error.message|| "Internal error")
+            console.log(error)
+        }
+    }
+    
+    useEffect(() => {
+        getIndividualData()
+    },[])
 
     const handleInputChange = (e) =>{
         const {id, value, type, checked} = e.target
@@ -38,6 +60,7 @@ const CreateNew = () => {
         })
        }
        else if(type === 'file'){
+        setFormData({...formData, image:""})
         const file = e.target.files[0];
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -65,9 +88,9 @@ const CreateNew = () => {
 
    const handleSubmit = async(e) => {
         e.preventDefault()
-        let imageUrl = formData.image; // Default to the current image URL if any
-
-    if (svg) {
+        let imageUrl = formData.image; 
+        console.log(imageUrl)
+    if (svg && !formData.image) {
       const formDataImage = new FormData();
       formDataImage.append('image', svg);
 
@@ -78,7 +101,7 @@ const CreateNew = () => {
         });
         const result = await response.json();
         if (result.success) {
-          imageUrl = result.data.url; // Get the URL from the ImgBB response
+          imageUrl = result.data.url; 
         } else {
           throw new Error(result.error.message || 'Image upload failed');
         }
@@ -89,8 +112,8 @@ const CreateNew = () => {
     }
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/employee/createNew`, {
-                method: "POST",
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/employee/update/${id}`, {
+                method: "PATCH",
                 headers: {
                     "Content-Type": "Application/json"
                 },
@@ -153,7 +176,7 @@ const CreateNew = () => {
                  {
                     (field.inputType === "file" ? <div className='flex flex-col space-y-2'>
                         <label htmlFor={field.id}>{field.title}</label>
-                        <input name={field.id} id={field.id} key={idx} type={field.inputType} className='hidden' value={formData[field.id]} onChange={handleInputChange} ref={fileRef} accept="image/*" />
+                        <input name={field.id} id={field.id} key={idx} type={field.inputType} className='hidden' onChange={handleInputChange} ref={fileRef} accept="image/*" />
                         <button  className='h-9 border rounded-md w-80 bg-[#FFF8DE]' onClick={() => fileRef.current.click()} type='button'>Upload Image</button>
                         {
                         svgPreview && 
@@ -164,15 +187,24 @@ const CreateNew = () => {
                             <img src={svgPreview} alt="preview" className='w-44 h-52'/>
                         </div>
                         }
+                        {
+                        formData.image && 
+                        <div>
+                            <div className='w-44 pr-1 flex justify-end'>
+                            <SlClose className='text-red-500 cursor-pointer' onClick={() => setFormData({...formData, image:""})}/>
+                            </div>
+                            <img src={formData.image} alt="preview" className='w-44 h-52'/>
+                        </div>
+                        }
                     </div>: null)
                  }
             </div>)
         }
-        <button className='bg-[#C5D3E8] p-2 rounded-md text-sm' type='submit'>Create</button>
+        <button className='bg-[#C5D3E8] p-2 rounded-md text-sm' type='submit'>Update</button>
         </form>
        
     </div>
   )
 }
 
-export default CreateNew
+export default Edit

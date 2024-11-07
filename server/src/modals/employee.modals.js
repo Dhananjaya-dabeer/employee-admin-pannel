@@ -8,7 +8,8 @@ const employeeSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        match: [/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/, 'Please provide a valid email address']
     },
     mobile: {
         type: String,
@@ -32,7 +33,7 @@ const employeeSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-})
+}, {timestamps: true})
 
  const Emplyee = mongoose.model("Employee", employeeSchema)
 

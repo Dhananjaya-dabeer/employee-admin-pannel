@@ -11,7 +11,7 @@ const DashboardLayout = () => {
     const handleLogout = async() =>{
         localStorage.clear()
         try {
-            const response = await fetch("api/auth/logout", {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/auth/logout`, {
                 method: "POST",
                 headers:{
                     "Content-Type": "application/json"
@@ -37,7 +37,7 @@ const DashboardLayout = () => {
 
   return (
     <div className='text-sm sm:font-normal'>
-        <div className='sm:p-5 p-2 flex justify-between items-center bg-[#A6AEBF] border-b border  hover:shadow-md'>
+        <div className='sm:p-5 p-2 flex justify-between items-center bg-[#C5D3E8] border-b border  hover:shadow-md'>
             <ul className='flex space-x-5'>
                 {
                     links.map((item, idx) => <li className={`hover:text-zinc-800 ${currentRoute.pathname === item.href ? 'text-zinc-900' : 'text-zinc-500'} cursor-pointer transition-colors`} key={idx}><Link to={item.href}>{item.dashboard}</Link></li> )
@@ -46,7 +46,7 @@ const DashboardLayout = () => {
             </ul>
             <div className='space-x-10'>
                 <span className='sm:inline-block hidden'>Hey! {admin}</span>
-            <span className='hover:text-red-300 text-red-500 cursor-pointer transition-colors' onClick={handleLogout}>Logut</span>
+            <span className='hover:text-red-300 text-red-500 cursor-pointer transition-colors' onClick={handleLogout}>Logout</span>
             </div>
         </div>
         <main className='p-2 sm:p-5 w-full'>

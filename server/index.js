@@ -3,7 +3,6 @@ import dotenv from 'dotenv'
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import authRouter from "./src/routes/auth.routes.js"
-import userRouter from "./src/routes/user.routes.js"
 import emplyeeRouter from "./src/routes/employee.routes.js"
 import cors from 'cors'
 
@@ -18,7 +17,6 @@ mongoose
 })
 
 const app = express()
-
 app.use(express.json())
 app.use(cors({
     origin: 'http://localhost:5173',
@@ -31,7 +29,6 @@ app.listen(process.env.PORT, () => {
 })
 
 app.use('/api/auth', authRouter)
-app.use('/api/user', userRouter)
 app.use('/api/employee', emplyeeRouter)
 
 app.use((error, req, res, next) => {

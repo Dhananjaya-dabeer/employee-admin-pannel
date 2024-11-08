@@ -19,7 +19,7 @@ mongoose
 const app = express()
 app.use(express.json())
 app.use(cors({
-    origin: `https://employee-admin-pannel.netlify.app`,
+    origin: `${process.env.ORIGIN}`,
     credentials: true,
 }))
 app.use(cookieParser())

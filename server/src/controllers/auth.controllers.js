@@ -25,8 +25,9 @@ export const login = async(req, res, next) => {
                 token,
                 {
                     httpOnly: true,
-                    maxAge: 24 * 60 * 60 * 1000, 
-                    secure: true
+                    secure: process.env.NODE_ENV === 'production',  
+                    sameSite: 'None', 
+                    maxAge: 24 * 60 * 60 * 1000
                 }
             ).status(200).json(rest)
            

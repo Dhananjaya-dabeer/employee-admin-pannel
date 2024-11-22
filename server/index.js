@@ -4,6 +4,7 @@ import express from 'express'
 import cookieParser from 'cookie-parser'
 import authRouter from "./src/routes/auth.routes.js"
 import emplyeeRouter from "./src/routes/employee.routes.js"
+import courseRouter from "./src/routes/course.routes.js"
 import cors from 'cors'
 
 dotenv.config()
@@ -30,7 +31,7 @@ app.listen(process.env.PORT, () => {
 
 app.use('/api/auth', authRouter)
 app.use('/api/employee', emplyeeRouter)
-
+app.use('/api/course', courseRouter)
 app.use((error, req, res, next) => {
     const statusCode = error.statusCode || 500
     const message = error.message || "Internal server error"

@@ -13,7 +13,7 @@ export const newEmployee = async(req, res ,next) => {
           image
       } = req.body
   
-      if(!name || !email || !mobile || !designation || !gender || !course || !image){
+      if(!name || !email || !mobile || !designation || !gender || !course.length || !image){
           return res.status(401).json({
               success: false,
               statusCode: 401,
@@ -95,7 +95,7 @@ export const updateEmployee = async (req, res, next) => {
         return next(errorHandler(400, "Employee ID is required"));
       }
   
-      if (!name || !email || !mobile || !designation || !gender || !course || !image) {
+      if (!name || !email || !mobile || !designation || !gender || !course.length || !image) {
         return res.status(400).json({
           success: false,
           statusCode: 400,

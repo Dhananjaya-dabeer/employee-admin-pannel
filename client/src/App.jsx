@@ -12,6 +12,8 @@ import PrivateRoute from './components/PrivateRoute'
 import EmployeeList from './pages/EmployeeList'
 import CreateNew from './pages/CreateNew'
 import Edit from './pages/Edit'
+import CourseMaster from './pages/CourseMaster'
+import EditCourseMaster from './pages/EditCourseMaster'
 function App() {
 
   return (
@@ -24,6 +26,8 @@ function App() {
             <Route path='list' element= {<EmployeeList/>} />
             <Route path='create-new' element= {<CreateNew/>} />
             <Route path='edit-employee/:id' element={<Edit/>} />
+            <Route path='/coursemaster' element={<CourseMaster/>} />
+            <Route path='/edit-course/:id' element={<EditCourseMaster/>} />
           </Route>
          </Route>
          <Route path='/login' element= {<LoginPage/>} />

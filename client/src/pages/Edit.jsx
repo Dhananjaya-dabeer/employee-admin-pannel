@@ -18,16 +18,17 @@ const Edit = () => {
         course: '',
         image: '',
     })
-    const allFields = [
-        {title: "Name", inputType: "text", id: "name"},
-        {title: "email", inputType: "email", id: "email"},
-        {title: "Mobile No", inputType: "number", id:"mobile"},
-        {title: "Designation", inputType: "Select", values: ['HR', 'Manager', 'Sales'], id:"designation" },
-        {title: "Gender", inputType: "radio", values: ['Male', 'Female'], id:"gender" },
-        {title: "Course", inputType: "checkbox", values: ['MCA', 'BCA', 'BSC'], id: "course" },
-        {title: "Upload your image", inputType: "file", id:"image"},
-    ]
-
+    const [allFields, setAllFields] = useState(
+        [
+            {title: "Name", inputType: "text", id: "name"},
+            {title: "email", inputType: "email", id: "email"},
+            {title: "Mobile No", inputType: "number", id:"mobile"},
+            {title: "Designation", inputType: "Select", values: ['HR', 'Manager', 'Sales'], id:"designation" },
+            {title: "Gender", inputType: "radio", values: ['Male', 'Female'], id:"gender" },
+            {title: "Course", inputType: "checkbox", values: ['MCA', 'BCA', 'BSC'], id: "course" },
+            {title: "Upload your image", inputType: "file", id:"image"},
+        ]
+    )
     const getIndividualData = async() => {
         try {
             const response = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/employee/single/${id}`, {
@@ -38,16 +39,44 @@ const Edit = () => {
                 credentials: "include"
             })
             const result = await response.json()
-            
+            console.log(result.data)
             setFormData(result.data)
         } catch (error) {
             toast.error(error.message|| "Internal error")
             console.log(error)
         }
     }
+
+    const fetchCourse = async() => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/course/get`, {
+                method: "GET"
+            })
+            const result = await response.json()
+            console.log(result)
+            // setFormData()
+            const courseData = result.data.map((item) => {
+                return item.course
+            })
+            const data = [...allFields]
+            const udpatedData = data?.map(item => {
+                if(item.title === "Course"){
+                    return {...item, values: [...courseData]}
+                }
+                return item
+            } )
+    
+            setAllFields(udpatedData) 
+        } catch (error) {
+            toast.error(error.message || "internal  error")
+            console.log(error)
+        }
+       }
+    
     
     useEffect(() => {
         getIndividualData()
+        fetchCourse()
     },[])
 
     const handleInputChange = (e) =>{
@@ -70,12 +99,28 @@ const Edit = () => {
         };
        }
        else if(type === 'radio' || type === 'checkbox'){
-        console.log(checked)
-        if(checked){
+        if (type === 'checkbox') {
+            
+            setFormData(prevFormData => {
+                const newCourses = [...prevFormData.course];
+                if (checked) {
+                    newCourses.push(value); 
+                } else {
+                    const index = newCourses.indexOf(value);
+                    if (index > -1) {
+                        newCourses.splice(index, 1); 
+                    }
+                }
+                return {
+                    ...prevFormData,
+                    [id]: newCourses 
+                };
+            });
+        } else {
             setFormData({
                 ...formData,
                 [id]: value
-            })
+            });
         }
        }
        else if(type === "select-one"){
@@ -134,7 +179,7 @@ const Edit = () => {
    }
 
 
-
+console.log(formData)
 
   return (
     <div className='space-y-6 sm:w-[600px]'>
@@ -167,7 +212,7 @@ const Edit = () => {
                         <label htmlFor={field.id}>{field.title}</label>
                         <div className='flex space-x-4'>
                         {field.values.map((item,idx) => <div className='flex flex-row items-center' key={idx}>
-                            <input name={item} id={field.id} type={field.inputType} className='h-9 border rounded-md' value={item} onChange={handleInputChange} checked={formData[field.id] === item} />
+                            <input name={item} id={field.id} type={field.inputType} className='h-9 border rounded-md' value={item} onChange={handleInputChange} checked={field.inputType === 'checkbox' ? formData.course.includes(item) : formData[field.id] === item} />
                             <label htmlFor={item}>{item}</label>
                         </div>)}
                         </div>

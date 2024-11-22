@@ -210,7 +210,7 @@ const EmployeeList = () => {
                 {filteredData.map((item, idx) => (
                   <tr key={idx} className="bg-gray-100 border-b">
                     <td className="px-4 py-2">{item.name}</td>
-                    <td className="px-4 py-2">{item.course}</td>
+                    <td className="px-4 py-2">{item?.course?.join(',')}</td>
                     <td className="px-4 py-2">{item.designation}</td>
                     <td className="px-4 py-2">{item.email}</td>
                     <td className="px-4 py-2">{item.mobile}</td>

@@ -32,7 +32,8 @@ const DashboardLayout = () => {
     }
     const links = [
         {dashboard: "Home", href: '/'},
-        {dashboard: "Employee List", href: '/list'}
+        {dashboard: "Employee List", href: '/list'},
+        {dashboard: "Course master", href: '/coursemaster'},
     ]
 
   return (
